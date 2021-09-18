@@ -1,10 +1,8 @@
-
 import plotly.express as px
 import pandas as pd
 dados_df = pd.read_excel("dados.xlsx") #leitura dos dados
 
 ##Posição	Atleta	Pais	Modalidade	Anos	Jogos	Sexo	Ouro	Prata	Bronze	Total
-
 
 atletas = []
 
@@ -16,7 +14,6 @@ for i in range(len(dados_df.values)):
         'bronze': dados_df['Bronze'][i]
        }
     atletas.append(atleta)
-
    
 atletas= sorted(atletas, key=lambda item: (item["ouro"], item["prata"], item["bronze"]), reverse=True)
 
