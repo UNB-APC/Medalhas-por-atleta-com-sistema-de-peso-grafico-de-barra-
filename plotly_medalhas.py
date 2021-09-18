@@ -5,15 +5,22 @@ dados_df = pd.read_excel("dados.xlsx") #leitura dos dados
 
 ##Posição	Atleta	Pais	Modalidade	Anos	Jogos	Sexo	Ouro	Prata	Bronze	Total
 
-medalhas = {}
-atletas = {'nome': [], 'ouro':[],'prata':[],'bronze':[]}
 
-for i in range(len(dados_df.values)):   
-    atletas['nome'].append(dados_df['Atleta'][i].replace('\xa0', ''))
-    atletas['ouro'].append(dados_df['Ouro'][i])
-    atletas['prata'].append(dados_df['Prata'][i])
-    atletas['bronze'].append(dados_df['Bronze'][i])
+atletas = []
 
+for i in range(len(dados_df.values)):  
+    atleta = {
+        'nome': dados_df['Atleta'][i].replace('\xa0', ''),
+        'ouro': dados_df['Ouro'][i],
+        'prata': dados_df['Prata'][i],
+        'bronze': dados_df['Bronze'][i]
+       }
+    atletas.append(atleta)
+
+   
+atletas= sorted(atletas, key=lambda item: (item["ouro"], item["prata"], item["bronze"]), reverse=True)
+
+print(atletas)
 
 fig = px.bar(
         atletas,
