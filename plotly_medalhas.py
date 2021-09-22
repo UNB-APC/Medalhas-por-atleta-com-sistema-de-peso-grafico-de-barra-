@@ -1,30 +1,52 @@
 import plotly.express as px
 import pandas as pd
-dados_df = pd.read_excel("dados.xlsx") #leitura dos dados
 
-##Posição	Atleta	Pais	Modalidade	Anos	Jogos	Sexo	Ouro	Prata	Bronze	Total
+#leitura dos dados
+dados_df = pd.read_csv("athlete_events.csv") 
 
-atletas = []
+#ID[0],"Name"[1],"Sex"[2],"Age"[3],"Height"[4],"Weight"[5],"Team"[6],"NOC"[7],"Games"[8],"Year"[9],"Season"[10],"City"[11],"Sport"[12],"Event"[13],"Medal"[14]
 
-for i in range(len(dados_df.values)):  
-    atleta = {
-        'nome': dados_df['Atleta'][i].replace('\xa0', ''),
-        'ouro': dados_df['Ouro'][i],
-        'prata': dados_df['Prata'][i],
-        'bronze': dados_df['Bronze'][i]
-       }
-    atletas.append(atleta)
-   
-atletas= sorted(atletas, key=lambda item: (item["ouro"], item["prata"], item["bronze"]), reverse=True)
+anos = {}
 
-print(atletas)
+for linha in dados_df.values:  
+    if type(linha[14]) != str:
+        continue
+    nome= linha[1]
+    ano= linha[9]
+    medalha= linha[14]
+    
+    if anos.get(ano) == None:
+        anos[ano] = {}
+    if anos[ano].get(nome) == None:
+        anos[ano][nome] = {'Gold': 0, 'Silver': 0, 'Bronze':0 }
+
+    anos[ano][nome][medalha]+=1
+
+anoslist = list(anos.keys())
+anoslist.sort()
+
+
+ 
+dados = {
+    'atletas' : [],
+    'Gold' : [],  
+    'Silver' : [],  
+    'Bronze' : []  
+}
+for j in range(len(anos[1992])): 
+        dados['atletas'].append(list(anos[1992].keys())[j])
+        dados['Gold'].append(list(anos[1992].values())[j]['Gold'])
+        dados['Silver'].append(list(anos[1992].values())[j]['Silver'])
+        dados['Bronze'].append(list(anos[1992].values())[j]['Bronze'])
+
 
 fig = px.bar(
-        atletas,
+        dados,
         title="Olimpíadas - Medalhas por atleta",  
-        x= 'nome',
-        y=['ouro','prata','bronze'], 
-        color_discrete_map={'ouro':'gold','prata':'silver', 'bronze':'#eb7e24'}, 
+        x= dados['atletas'],
+        y= [dados['Gold'],dados['Silver'],dados['Bronze']], 
+        width=2009,
+        
         labels={'value':'Quantidades de medalhas', 'variable':'Medalhas', 'nome':'Atletas'}    
         )
 fig.show()
