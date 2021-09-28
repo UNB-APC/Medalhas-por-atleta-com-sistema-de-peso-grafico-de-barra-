@@ -25,19 +25,21 @@ for linha in dados_csv.values:
 
 anos_ordenados  = sorted(dados)
 
-dataFrame= {'ano': [], 'atleta': [], 'medalhas':[]}
+dataFrame= {'ano': [], 'atleta': [], 'Gold':[], 'Silver':[], 'Bronze': []}
 for ano in dados:
     for atleta in dados[ano]:
         dataFrame['ano'].append(ano)
         dataFrame['atleta'].append(atleta)
-        dataFrame['medalhas'].append(dados[ano][atleta])
+        dataFrame['Gold'].append(dados[ano][atleta]['Gold'])
+        dataFrame['Silver'].append(dados[ano][atleta]['Silver'])
+        dataFrame['Bronze'].append(dados[ano][atleta]['Bronze'])
 
 fig = px.bar(
         dataFrame,
         title="Olimpíadas - Medalhas por atleta",  
-        x= dados['atletas'],
-        y= [dados['Gold'],dados['Silver'],dados['Bronze']], 
-        width=2009,
+        x= dataFrame['atleta'],
+        y= [dataFrame['Gold'],dataFrame['Silver'],dataFrame['Bronze']], 
+        
         
         labels={'value':'Quantidades de medalhas', 'variable':'Medalhas', 'nome':'Atletas'}    
         )
