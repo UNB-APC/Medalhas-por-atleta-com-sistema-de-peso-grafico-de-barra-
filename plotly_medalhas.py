@@ -22,41 +22,8 @@ for linha in dados_csv.values:
 
     agrupado_por_ano[ano][nome][medalha]+=1
 
-df = {'nome' : [], 'medalhas' : []}  
+anos_ordenados = sorted(agrupado_por_ano)
 
-for nome, medalhas in zip(agrupado_por_ano[ano].keys(), agrupado_por_ano[ano].values()):    
-    df['nome'].append(nome)
-    df['medalhas'].append(medalhas)
-
-figure = px.bar(
-        df,
-        title="Olimpíadas - Medalhas por atleta",  
-        x= 'nome',
-        y= 'medalhas',
-         
-        
-        
-        labels={'value':'Quantidades de medalhas', 'variable':'Medalhas', 'nome':'Atletas'}    
-    )
-figure.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''
 from dash import Dash
 from dash import html
 from dash import dcc
@@ -68,8 +35,8 @@ app.layout = html.Div(
     children = [
     dcc.Dropdown(
         id = "ano_selecionado",
-        options = [{"label": str(ano), "value": ano} for ano in sorted(agrupado_por_ano)],
-        value = sorted(agrupado_por_ano)[0],
+        options = [{"label": str(ano), "value": ano} for ano in anos_ordenados],
+        value = anos_ordenados[0],
         style = {"width": "100 px"}
     ),
     dcc.Graph(
@@ -79,30 +46,29 @@ app.layout = html.Div(
 )])
 
 @app.callback(
-    [Output(component_id = "grafico",component_property="figure")],
+    [Output(component_id = "grafico", component_property="figure")],
     [Input(component_id = "ano_selecionado", component_property = "value")]
 )
 
 def atualizar_grafico(ano_selecionado):
     copy = agrupado_por_ano[ano_selecionado].copy()
 
-    df = {'nome' : [], 'medalhas' : []}  
+    df = {'nome' : [], 'Gold' : [],'Silver':[],'Bronze':[]}  
 
     for nome, medalhas in zip(copy.keys(), copy.values()):    
         df['nome'].append(nome)
-        df['medalhas'].append(medalhas)
-    
-    
-    figure = px.bar(
+        df['Gold'].append(medalhas['Gold'])
+        df['Silver'].append(medalhas['Silver'])
+        df['Bronze'].append(medalhas['Bronze'])
+
+    grafico = px.bar(
             df,
             title="Olimpíadas - Medalhas por atleta",  
             x= 'nome',
-            y= 'medalhas', 
-            
-            
-            labels={'value':'Quantidades de medalhas', 'variable':'Medalhas', 'nome':'Atletas'}    
+            y= ['Gold','Silver','Bronze'],  
+                   
+            labels={'value':'Quantidade de medalhas', 'variable':'Medalhas', 'nome':'Atletas'}    
         )
-    return figure
+    return grafico
 
 app.run_server()
-'''
